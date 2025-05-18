@@ -1,0 +1,97 @@
+<style>
+    .tag-group {
+      display: inline-block;
+      gap: 10px;
+    }
+  
+    .choice-type, .sort-method, .tag-method {
+            padding: 8px 16px;
+            border: 1px solid #ccc;
+            border-radius: 9999px; /* Pill shape */
+            background-color: white;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background-color 0.2s, color 0.2s, border-color 0.2s;
+            margin: 2px;
+        }
+        .choice-type:hover, .sort-method:hover, .tag-method:hover {
+            background-color: #f0f0f0;
+        }
+        .choice-type.selected, .sort-method.selected, .tag-method.selected {
+            background-color: #3b82f6; /* Blue background for selected */
+            color: white;
+            border-color: #3b82f6;
+        }
+</style>
+
+<br>标签筛选</br>
+
+<div class="tag-group" id="tagGroup">
+    <button class="tag-method" data-value="中毒">中毒</button>
+    <button class="tag-method" data-value="醉酒">醉酒</button>
+    <button class="tag-method" data-value="疯狂">疯狂</button>
+    <button class="tag-method" data-value="提名">提名</button>
+    <button class="tag-method" data-value="投票">投票</button>
+    <button class="tag-method" data-value="处决">处决</button>
+    <button class="tag-method" data-value="免死">免死</button>
+    <button class="tag-method" data-value="认知覆盖">认知覆盖</button>
+    <button class="tag-method" data-value="角色变化">角色变化</button>
+    <button class="tag-method" data-value="阵营转变">阵营转变</button>
+    <button class="tag-method" data-value="获得能力">获得能力</button>
+    <button class="tag-method" data-value="进场能力">进场能力</button>
+    <button class="tag-method" data-value="限次能力">限次能力</button>
+    <button class="tag-method" data-value="获取信息">获取信息</button>
+    <button class="tag-method" data-value="额外死亡">额外死亡</button>
+    <button class="tag-method" data-value="暴露角色">暴露角色</button>
+    <button class="tag-method" data-value="限次能力">设置调整</button>
+    <button class="tag-method" data-value="拜访说书人">拜访说书人</button>
+    <button class="tag-method" data-value="能力效果干扰">能力效果干扰</button>
+    <button class="tag-method" data-value="死后能力保留">死后能力保留</button>
+    <button class="tag-method" data-value="公开触发能力">公开触发能力</button>
+    <button class="tag-method" data-value="死亡触发能力">死亡触发能力</button>
+    <button class="tag-method" data-value="特殊胜利失败条件">特殊胜利失败条件</button>
+    
+</div>
+
+
+<script>
+    const tag_buttons = document.querySelectorAll(".tag-method");
+
+    var rule_tag_filter = (a) => {
+        var tags = a.dataset.tag.split('、');
+        require_tags.forEach(require => {
+            if(!tags.includes(require)){
+              return false;
+            }
+        });
+        return true;
+    };
+    
+    var require_tags = new Set();
+
+    tag_buttons.forEach(button => {
+      button.addEventListener("click", () => {
+
+        // 设置当前为选中
+        if(button.classList.contains("selected")){
+            button.classList.remove("selected");
+            require_tags.delete(button.dataset.value);
+        }else{
+            button.classList.add("selected");
+            require_tags.add(button.dataset.value);
+        }
+        rule_tag_filter = (a) => {
+          var tags = a.dataset.tag.split("_");
+          var fail = false;
+          require_tags.forEach(require => {
+              if(!tags.includes(require)){
+                fail = true;
+                return;
+              }
+          });
+          return !fail;
+        };
+        update();
+      });
+    });
+</script>

@@ -1,0 +1,64 @@
+<style>
+    .choice-group {
+      display: flex;
+      gap: 10px;
+    }
+
+    .choice-type, .sort-method, .tag-method {
+            padding: 8px 16px;
+            border: 1px solid #ccc;
+            border-radius: 9999px; /* Pill shape */
+            background-color: white;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background-color 0.2s, color 0.2s, border-color 0.2s;
+            margin: 2px;
+        }
+        .choice-type:hover, .sort-method:hover, .tag-method:hover {
+            background-color: #f0f0f0;
+        }
+        .choice-type.selected, .sort-method.selected, .tag-method.selected {
+            background-color: #3b82f6; /* Blue background for selected */
+            color: white;
+            border-color: #3b82f6;
+        }
+</style>
+
+<br>角色类型筛选</br>
+<div class="choice-group" id="choiceGroup">
+    <button class="choice-type" data-value="0">全部</button>
+    <button class="choice-type" data-value="1">镇民</button>
+    <button class="choice-type" data-value="2">外来者</button>
+    <button class="choice-type" data-value="3">爪牙</button>
+    <button class="choice-type" data-value="4">恶魔</button>
+</div>
+
+<script>
+    const choice_buttons = document.querySelectorAll(".choice-type");
+    const result = document.getElementById("result");
+
+    var type_filter_num = 0;
+
+    var rule_type_filter = (item) => {
+            return type_filter_num == 0 || 
+                type_filter_num == item.dataset.team;
+        };
+
+    
+      choice_buttons.forEach(button => {
+      button.addEventListener("click", () => {
+        // 清除已有选择
+        choice_buttons.forEach(btn => btn.classList.remove("selected"));
+  
+        // 设置当前为选中
+        button.classList.add("selected");
+
+        type_filter_num = button.dataset.value;
+        rule_type_filter = (item) => {
+            return type_filter_num == 0 || 
+                type_filter_num == item.dataset.team;
+        };
+        update();
+      });
+    });
+</script>
