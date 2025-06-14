@@ -1,1 +1,0 @@
-{"ability": "每位玩家始终处于阴态、阳态或终末态之一。在游戏开始时，根据恶魔位置将连续半数玩家（向下/向上取整均可）设置为阴态，其余玩家设置为阳态。", "team": "fabled", "tags": ["没有"], "script": "阴阳轮盘", "image": "https://www.bloodstar.xyz/p/YanIce/YinYangLunPan/28_yinyanglunpan.png"}

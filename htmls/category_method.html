@@ -36,7 +36,16 @@
     const category_buttons = document.querySelectorAll(".category-method");
 
     var rule_cate = (x) => {
-        cate = {"善良阵营·镇民":[], "善良阵营·外来者":[], "邪恶阵营·爪牙":[], "邪恶阵营·恶魔":[]}
+        cate = {"变装假面":[],"善良阵营·镇民":[], "善良阵营·外来者":[], "邪恶阵营·爪牙":[], "邪恶阵营·恶魔":[],"传奇角色":[]};
+        colormap = {
+        "变装假面": 'black', 
+        "善良阵营·镇民": '#2d7ccd',
+        "善良阵营·外来者": '#2d7ccd',
+        "邪恶阵营·爪牙": '#cc2625',
+        "邪恶阵营·恶魔": '#cc2625',
+        "传奇角色": '#ffc600',
+        };
+        
         x.forEach((ele)=>{
             console.log(ele);
             switch(ele.dataset.team*1){
@@ -52,9 +61,15 @@
                 case 4:
                     cate["邪恶阵营·恶魔"].push(ele);
                     break;
+                case 5:
+                    cate["变装假面"].push(ele);
+                    break;
+                case 6:
+                    cate["传奇角色"].push(ele);
+                    break;
             }
         });
-        return cate;
+        return [cate, colormap];
     }
     category_buttons.forEach(button => {
       button.addEventListener("click", () => {

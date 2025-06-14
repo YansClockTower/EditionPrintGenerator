@@ -14,6 +14,8 @@ def import_from_json(json_file_path):
         key = ch['name']
         
         if ch['id'] == '_meta':
+            if not 'version' in ch:
+            	ch['version'] = 'beta'
             save_edition_meta(ch)
             continue
 
@@ -64,7 +66,7 @@ def import_from_json(json_file_path):
             'ability': ability,
             'team': team,
             'tags': ["没有"],
-            'script': '阴阳轮盘',
+            'script': '没有',
             'image': image_url
         }
         save_character_meta(key, meta_)
