@@ -18,7 +18,9 @@ def sort_func(x):
             return 5
         if x.startswith('fable'):
             return 6
-        return 7
+        if x.startswith('jinx') or x.startswith('a jinx'):
+            return 7
+        return 8
 
 def load_html_file(filename,config):
     with open(filename, "r", encoding="utf-8") as f:
@@ -38,7 +40,6 @@ def generate_html_output(file_name):
     root_dir = 'data'
     # 获取所有文件
     data_files = load_character_list()
-
     team_map = {}
     datas = []
     with open("config/team_name.json", "r") as f:
@@ -88,9 +89,10 @@ def generate_html_output(file_name):
         margin-top: 10px;
         margin-bottom: 10px;
         padding: 10px;
-        text-align: left;
+        text-align: center;
         background-color: #d9d0be;
         height: 150px;
+        width: 1500px;
         font-size: 14px;
         box-shadow: 0 1px 3px rgba(0,0,0,0.2);
         z-index: 1001;
@@ -104,7 +106,7 @@ def generate_html_output(file_name):
     
     .grid {
         display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
     }
     .item {
         border-radius: 0px;
@@ -115,13 +117,13 @@ def generate_html_output(file_name):
     .item img {
         width: 70px;
         height: 70px;
-        object-fit: contain;
+        object-fit: cover;
     }
     .item p {
         text-align: left;
         margin-right: 10px;
         margin-top: 10px;
-        font-size: 12px;
+        font-size: 13px;
         color: #333;
     }
 
@@ -164,40 +166,44 @@ def generate_html_output(file_name):
 
 	<div style="display: flex; justify-content: center;" >
     """
-
-    if 'state' in meta:
+    
+    state = get_statement()
+    if state:
         # Add image
         html += f"""	
         <div style="width: 100vw; align-items: center;">
-        <img style="width: 100%; height: 120px;" src="{logo}">
+        <img style="width: auto; height: 160px;" src="{logo}">
         <div style="text-align: left; font-size: 14px;">
 	剧本作者：{AUTHOR}<br>
-	支持人数： 5-9人
+	支持人数： 7-15人
 	</div>
         </div>
         """
         
         # Add state
-        all_states = ''
-        for stateent in meta['state']:
-            all_states = all_states + '<b>'+ stateent['stateName'] +'</b> '
-            all_states = all_states + stateent['stateDescription'] + '<br>\n'
-
-        html += f"""<div class="statement" > {all_states} </div>"""
-    
+        all_states = '<b>'+ state['name'] +'</b><br> <br> '+state['ability']
+        
+        html += f"""<div class="statement"> {all_states} </div>"""
+        
+        # author info
+        html += f"""
+	    </div>
+        """
     else:
         # Only add image
         html += f"""	
-        <div style="width: 40vw; align-items: center;">
-        <img style="width: 100%; height: auto;" src="{logo}">
+            <div style="width: 50vw; align-items: center;">
+            <img style="width:auto; height: 120px;" src="{logo}">
+            </div>
         </div>
+        
+        <div style="text-align: right; font-size: 14px;">
+	剧本作者：{AUTHOR}<br>
+	支持人数： 7-15人
+	</div>
         """
 
-    # author info
-    html += f"""
-	</div>
 
-    """
 
     # with open("htmls/skins_top.html", "r", encoding="utf-8") as f:
     #    html += f.read()
@@ -219,11 +225,11 @@ def generate_html_output(file_name):
     with open("htmls/util.html", "r", encoding="utf-8") as f:
         html += f.read()
 
-    with open("htmls/choice_group.html", "r", encoding="utf-8") as f:
-        html += f.read()
+    # with open("htmls/choice_group.html", "r", encoding="utf-8") as f:
+    #     html += f.read()
 
-    with open("htmls/sort_method.html", "r", encoding="utf-8") as f:
-        html += f.read()
+    # with open("htmls/sort_method.html", "r", encoding="utf-8") as f:
+    #     html += f.read()
 
     with open("htmls/category_method.html", "r", encoding="utf-8") as f:
         html += f.read()
@@ -240,13 +246,14 @@ def generate_html_output(file_name):
 
     # 添加每个图标+文字组合
     for item in datas:
+        print(item['name'])
         tag_seri = ''
         for a in item['tags']:
             tag_seri = tag_seri + a + '_'
         html += f"""
             <div class="item" data-name={item['name']} data-team={sort_func(item['team'])} data-tag={tag_seri} >
-                <img src="{item['image']}" alt="{item['name']}"> 
-                <p> <b>{item['name']}</b> <br> {item['ability']}</p>
+                <img src="{item['image']}" alt="{item['name']}" onerror="this.onerror=null; this.src='https://111.229.112.80/editions/unknown.png';"> 
+                <p> <b>{item['name'].split('__')[1]}</b> <br> {item['ability']}</p>
             </div>
         """
 
@@ -274,9 +281,9 @@ def generate_html_output(file_name):
         content.replaceChildren();
         var items = Array.from(items_all);
 
-        items = items.filter(rule_type_filter);
+        //items = items.filter(rule_type_filter);
 
-        items = items.filter(rule_tag_filter);
+        //items = items.filter(rule_tag_filter);
         // 按 data-name 排序
         //item = items.sort(rule_sort);
 
@@ -320,7 +327,7 @@ def generate_html_output(file_name):
 
     for charac in firstnight:
         img = load_character_meta(charac)['image']
-        html += f""" <div class = "side-icon"><img src="{img}"></div> """
+        html += f""" <div class = "side-icon"><img src="{img}" onerror="this.onerror=null; this.src='https://111.229.112.80/editions/unknown.png';"></div> """
 
     html += f""" <div class = "side-icon"><img src="../resources/day.jpg"></div> """
 
@@ -336,24 +343,27 @@ def generate_html_output(file_name):
     html += f""" <div class = "side-icon"><img src="../resources/night.jpg"></div> """
     for charac in firstnight:
         img = load_character_meta(charac)['image']
-        html += f""" <div class = "side-icon"><img src="{img}"></div> """
+        html += f""" <div class = "side-icon"><img src="{img}" onerror="this.onerror=null; this.src='https://111.229.112.80/editions/unknown.png';"></div> """
 
     html += f""" <div class = "side-icon"><img src="../resources/day.jpg"></div> """
 
     html+="""
     </div>
-    """
+    """ 
 
     ##########################################
 
     #with open("htmls/skins_bottom.html", "r", encoding="utf-8") as f:
     #        html += f.read()
 
-    today = datetime.date.today()
-
+    today = datetime.date.today() 
+   # 带“★”角色的能力是限次能力，带“▲”的角色可以获得他人的限次能力。<br>
+   #     限于角色数量，该剧本最高支持12人游戏，且建议8～9人游戏。<br>
     html += f""" 
     <p class="text-center">
-        <br>每个夜晚* 表示从第二个夜晚开始生效。 <br>
+    <br>
+
+         每个夜晚* 表示从第二个夜晚开始生效。 <br>
     </p>
        
     <hr>

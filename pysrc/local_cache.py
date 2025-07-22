@@ -42,7 +42,7 @@ def save_other_night_order(d):
 data_dir = 'data'
 
 def load_character_list():
-    return [f for f in os.listdir(data_dir)]
+    return sorted(os.listdir(data_dir), key=lambda x: x.lower())
 
 def load_character_meta(name):
     data_path = os.path.join(data_dir, name).replace("\\", "/")  # 兼容 Windows 路径
@@ -89,3 +89,14 @@ def save_edition_meta(data):
     with open(data_path, "w") as f:
         json.dump(data, f, ensure_ascii=False)
 
+def get_statement():
+    data_path = os.path.join(config_dir, "statement.json").replace("\\", "/")  # 兼容 Windows 路径
+    if os.path.exists(data_path):
+        with open(data_path, "r") as f:
+            return json.load(f)
+
+def save_statement(data):
+    data_path = os.path.join(config_dir, "statement.json").replace("\\", "/")  # 兼容 Windows 路径
+   
+    with open(data_path, "w") as f:
+        json.dump(data, f, ensure_ascii=False)

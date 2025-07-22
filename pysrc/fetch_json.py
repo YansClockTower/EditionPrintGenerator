@@ -9,16 +9,27 @@ def import_from_json(json_file_path):
     name_list = []
     first_night = []
     other_night = []
-
+    counter = 10
     for ch in json_file:
-        key = ch['name']
+        counter = counter + 1
+        key = str(counter)+'__'+ch['name']
         
         if ch['id'] == '_meta':
             if not 'version' in ch:
             	ch['version'] = 'beta'
+            if 'state' in ch:
+                state = {
+                "name": ch['state'][0]['stateName'],
+                "ability": ch['state'][0]['stateDescription'],
+                }
+                save_statement(state);
             save_edition_meta(ch)
             continue
-
+            
+        if ch['id'] == 'sihuoshangren':
+            save_statement(ch)
+            continue
+	
         os.makedirs('data/'+key, exist_ok=True)
         name_list.append(key)
         firstni = ''
@@ -28,7 +39,8 @@ def import_from_json(json_file_path):
         if 'firstNight' in ch:
             firstnio = ch['firstNight']
             if firstnio > 0:
-                firstni = ch['firstNightReminder']
+                if 'firstNightReminder' in ch:
+                    firstni = ch['firstNightReminder']
                 first_night.append((firstnio, key))
 
         if 'otherNight' in ch:
@@ -36,7 +48,7 @@ def import_from_json(json_file_path):
             if othernio > 0:
                 if 'otherNightReminder' in ch:
                     otherni = ch['otherNightReminder']
-                    other_night.append((othernio, key))
+                other_night.append((othernio, key))
             
         if 'reminders' in ch:
             reminders = ch['reminders']
@@ -59,6 +71,9 @@ def import_from_json(json_file_path):
         image_url = ''
         if 'image' in ch:
             image_url = ch['image']
+            if len(image_url) == 2:
+                image_url = image_url[0]
+            
         ability = ch['ability']
         team = ch['team']
         
